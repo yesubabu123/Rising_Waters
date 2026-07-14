@@ -3,31 +3,45 @@ import pickle
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 
-# 1. Simple training data (Rainfall, River Level, Temperature)
+# Define the exact custom class your app.py is looking for
+class IdentityScaler:
+    def fit(self, X, y=None):
+        return self
+    def transform(self, X):
+        return X
+    def fit_transform(self, X, y=None):
+        return X
+
+# 1. Dummy training data
 X = np.array([
-    [120, 5.5, 24],  # Flood
-    [10, 1.2, 30],   # No Flood
-    [150, 6.2, 22],  # Flood
-    [5, 0.8, 28],    # No Flood
-    [90, 4.1, 25],   # Flood
-    [2, 0.5, 32]     # No Flood
+    [120, 5.5, 24],
+    [10, 1.2, 30],
+    [150, 6.2, 22],
+    [5, 0.8, 28],
+    [90, 4.1, 25],
+    [2, 0.5, 32]
 ])
 
-# Labels: 1 = Flood, 0 = No Flood
 y = np.array([1, 0, 1, 0, 1, 0])
 
-print("🤖 Training the flood prediction model...")
+print("🤖 Training the model with IdentityScaler tracking...")
 
-# 2. Train the model
+# 2. Initialize the matching custom scaler
+scaler = IdentityScaler()
+X_scaled = scaler.fit_transform(X)
+
+# 3. Train the classifier
 model = RandomForestClassifier(n_estimators=10, random_state=42)
-model.fit(X, y)
+model.fit(X_scaled, y)
 
-# 3. Create the 'models' directory if it doesn't exist
+# 4. Make sure directory exists
 os.makedirs("models", exist_ok=True)
 
-# 4. Save the model directly to models/flood_model.pkl
-model_path = os.path.join("models", "flood_model.pkl")
-with open(model_path, "wb") as f:
+# 5. Save the generated files
+with open(os.path.join("models", "flood_model.pkl"), "wb") as f:
     pickle.dump(model, f)
 
-print("✅ Success! Your new 'flood_model.pkl' has been created inside the 'models' folder.")
+with open(os.path.join("models", "scaler.pkl"), "wb") as f:
+    pickle.dump(scaler, f)
+
+print("✅ Success! Fixed scaler.pkl generated for IdentityScaler alignment.")
