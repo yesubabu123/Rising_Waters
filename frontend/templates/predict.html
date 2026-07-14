@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rising Waters — Predict</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <div class="container">
+      <div class="nav">
+        <div>
+          <h1>🌊 Flood Prediction</h1>
+          <p class="hero-subtitle">Submit data for accurate flood risk assessment.</p>
+        </div>
+        <div class="nav-actions">
+          <a class="button button-secondary" href="/dashboard">Dashboard</a>
+          <a class="button button-secondary" href="/logout">Logout</a>
+        </div>
+      </div>
+
+      <div class="card">
+        {% if error %}
+          <div class="alert">{{ error }}</div>
+        {% endif %}
+
+        <form method="post" class="form-stack">
+          <div class="form-grid">
+            {% for feature in features %}
+              <div>
+                <label for="{{ feature }}">{{ feature_labels[feature] }}</label>
+                <input id="{{ feature }}" name="{{ feature }}" value="{{ request.form.get(feature, '') }}" required>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="form-actions">
+            <button type="submit">Run Prediction</button>
+          </div>
+        </form>
+
+        {% if result %}
+          <div class="result {{ 'high' if 'HIGH' in result else 'low' }}">
+            <strong>{{ result }}</strong>
+            {% if confidence %}
+              &nbsp;• Confidence: {{ confidence }}%
+            {% endif %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+</html>

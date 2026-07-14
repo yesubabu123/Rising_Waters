@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Rising Waters Login</title>
+    <title>Rising Waters — Sign Up</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   </head>
   <body>
     <div class="container login-page">
       <div class="card card-center">
-        <h1>🌊 Rising Waters</h1>
-        <p class="hero-subtitle">Sign in to access flood risk predictions.</p>
+        <h1>🌊 Create an account</h1>
+        <p class="hero-subtitle">Sign up to start using the flood risk dashboard.</p>
         {% if error %}
           <div class="alert">{{ error }}</div>
         {% endif %}
@@ -19,9 +19,13 @@
           <input id="username" name="username" placeholder="Enter username" required>
           <label for="password">Password</label>
           <input id="password" name="password" type="password" placeholder="Enter password" required>
-          <button type="submit">Login</button>
+          <label for="confirm_password">Confirm password</label>
+          <input id="confirm_password" name="confirm_password" type="password" placeholder="Confirm password" required>
+          <div class="form-actions">
+            <button type="submit">Sign Up</button>
+            <a class="button button-secondary" href="/login">Back to Login</a>
+          </div>
         </form>
-        <p class="form-note">New here? <a href="/signup">Create an account</a></p>
       </div>
     </div>
   </body>

@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rising Waters — Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <div class="container">
+      <div class="nav">
+        <div>
+          <h1>🌊 Rising Waters</h1>
+          <p class="hero-subtitle">Flood prediction dashboard and recent risk history</p>
+        </div>
+        <div class="nav-actions">
+          <a class="button button-secondary" href="/predict">New Prediction</a>
+          <a class="button" href="/logout">Logout</a>
+        </div>
+      </div>
+
+      <div class="card stats">
+        <div class="stat">
+          <div class="stat-label">Total Predictions</div>
+          <div class="stat-value">{{ total_predictions }}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Safe Cases</div>
+          <div class="stat-value">{{ safe_cases }}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Flood Cases</div>
+          <div class="stat-value">{{ flood_cases }}</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Today</div>
+          <div class="stat-value">{{ todays_predictions }}</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-heading">
+          <h2>Recent Predictions</h2>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Location</th>
+              <th>Prediction</th>
+              <th>Risk Level</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in recent_predictions %}
+              <tr>
+                <td>{{ r.timestamp or 'Unknown' }}</td>
+                <td>{{ r.location }}</td>
+                <td>{{ r.prediction_label }}</td>
+                <td>{{ r.risk_level }}</td>
+              </tr>
+            {% else %}
+              <tr><td colspan="4">No recent predictions</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>

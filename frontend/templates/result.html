@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Rising Waters — Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <div class="container">
+      <div class="nav">
+        <div>
+          <h1>🌊 Prediction Result</h1>
+          <p class="hero-subtitle">Here is your flood risk assessment.</p>
+        </div>
+        <div class="nav-actions">
+          <a class="button button-secondary" href="/dashboard">Dashboard</a>
+          <a class="button button-secondary" href="/predict">New Prediction</a>
+          <a class="button button-secondary" href="/logout">Logout</a>
+        </div>
+      </div>
+
+      <div class="card card-center">
+        <h2>{{ risk_label }}</h2>
+        <p><strong>Risk level:</strong> {{ risk_level }}</p>
+
+        <div class="card">
+          <h3>Predicted values</h3>
+          <table>
+            <tbody>
+              {% for feature, value in request.form.items() %}
+                {% if feature not in ['csrf_token'] %}
+                  <tr>
+                    <td>{{ feature_labels[feature] if feature_labels[feature] is defined else feature }}</td>
+                    <td>{{ value }}</td>
+                  </tr>
+                {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h3>Recommendations</h3>
+          <ul>
+            {% for item in recommendations %}
+              <li>{{ item }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
