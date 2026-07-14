@@ -14,16 +14,21 @@ TEMPLATE_DIR = BASE_DIR / "frontend" / "templates"
 app = Flask(__name__, template_folder=str(TEMPLATE_DIR))
 app.config["JSON_SORT_KEYS"] = False
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/rising_waters")
+MONGO_URI = os.getenv("MONGO_URI")
+client = None
+db = None
 
-try:
-    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
-    client.server_info()
-    db = client["rising_waters"]
-    print("✅ Successfully connected to MongoDB!")
-except Exception as exc:
-    db = None
-    print(f"❌ MongoDB connection failed: {exc}")
+if MONGO_URI:
+    try:
+        client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+        client.server_info()
+        db = client["rising_waters"]
+        print("✅ Successfully connected to MongoDB!")
+    except Exception as exc:
+        db = None
+        print(f"⚠️ MongoDB connection skipped: {exc}")
+else:
+    print("⚠️ No MONGO_URI configured. Running without MongoDB.")
 
 model = None
 scaler = None

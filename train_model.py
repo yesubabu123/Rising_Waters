@@ -1,77 +1,33 @@
-import pandas as pd
-import pickle
 import os
-
-from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.preprocessing import StandardScaler
+import pickle
+import numpy as np
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
 
-print("🚀 FINAL MODEL TRAINING STARTED")
+# 1. Simple training data (Rainfall, River Level, Temperature)
+X = np.array([
+    [120, 5.5, 24],  # Flood
+    [10, 1.2, 30],   # No Flood
+    [150, 6.2, 22],  # Flood
+    [5, 0.8, 28],    # No Flood
+    [90, 4.1, 25],   # Flood
+    [2, 0.5, 32]     # No Flood
+])
 
-# Load dataset
-data = pd.read_csv("dataset/flood_risk_dataset_india.csv.xlsx")
-data.columns = data.columns.str.strip()
+# Labels: 1 = Flood, 0 = No Flood
+y = np.array([1, 0, 1, 0, 1, 0])
 
-target = "Flood Occurred"
+print("🤖 Training the flood prediction model...")
 
-feature_columns = [
-    "Latitude",
-    "Longitude",
-    "Annual Rainfall (mm)",
-    "Temperature (°C)",
-    "Humidity (%)",
-    "River Discharge (m3/s)",
-    "Water Level (m)",
-    "Elevation (m)",
-    "Population Density",
-    "Infrastructure",
-    "Historical Floods",
-    "Cloud Visibility(%)",
-    "Seasonal Rainfall"
-]
+# 2. Train the model
+model = RandomForestClassifier(n_estimators=10, random_state=42)
+model.fit(X, y)
 
-X = data[feature_columns]
-y = data[target]
-
-X = X.fillna(X.mean(numeric_only=True))
-
-print("TOTAL FEATURES:", X.shape[1])
-
-# Split RAW data (IMPORTANT FIX)
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y,
-    test_size=0.2,
-    random_state=42,
-    stratify=y
-)
-
-# Scaling
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
-
-# Model
-rf = RandomForestClassifier(
-    n_estimators=200,
-    max_depth=None,
-    min_samples_split=5,
-    random_state=42
-)
-
-rf.fit(X_train_scaled, y_train)
-
-pred = rf.predict(X_test_scaled)
-
-accuracy = accuracy_score(y_test, pred)
-
-print("🎯 Accuracy:", round(accuracy * 100, 2), "%")
-
-# Save model + scaler
+# 3. Create the 'models' directory if it doesn't exist
 os.makedirs("models", exist_ok=True)
 
-pickle.dump(rf, open("models/flood_model.pkl", "wb"))
-pickle.dump(scaler, open("models/scaler.pkl", "wb"))
+# 4. Save the model directly to models/flood_model.pkl
+model_path = os.path.join("models", "flood_model.pkl")
+with open(model_path, "wb") as f:
+    pickle.dump(model, f)
 
-print("💾 Model & Scaler Saved Successfully")
-print("🎉 TRAINING COMPLETED")
+print("✅ Success! Your new 'flood_model.pkl' has been created inside the 'models' folder.")
