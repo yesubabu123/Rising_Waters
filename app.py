@@ -42,8 +42,15 @@ logger = logging.getLogger(__name__)
 
 try:
     model = pickle.load(open("models/flood_model.pkl", "rb"))
-    scaler = pickle.load(open("models/scaler.pkl", "rb"))
-    logger.info("✅ Model and Scaler loaded successfully!")
+    try:
+        scaler = pickle.load(open("models/scaler.pkl", "rb"))
+        logger.info("✅ Model and Scaler loaded successfully!")
+    except FileNotFoundError:
+        scaler = None
+        logger.warning("⚠️ Scaler file not found: using raw input values instead of scaling.")
+    except Exception as e:
+        scaler = None
+        logger.error(f"❌ Error loading scaler: {str(e)}")
 except Exception as e:
     logger.error(f"❌ Error loading model: {str(e)}")
     model = None
@@ -306,7 +313,7 @@ def predict():
     if request.method == "GET":
         return render_template("predict.html", features=FEATURES, feature_labels=FEATURE_LABELS)
     try:
-        if model is None or scaler is None:
+        if model is None:
             return render_template("error.html", error="Model not loaded"), 500
         input_dict, input_data, error = {}, [], None
         for feature in FEATURES:
@@ -318,7 +325,11 @@ def predict():
                 return render_template("error.html", error=result), 400
             input_dict[feature] = result
             input_data.append(result)
-        final_input = scaler.transform([input_data])
+        if scaler is not None:
+            final_input = scaler.transform([input_data])
+        else:
+            logger.warning("⚠️ Scaler missing; using raw input values — predictions may be unreliable.")
+            final_input = [input_data]
         prediction = int(model.predict(final_input)[0])
         raw_probability = model.predict_proba(final_input)[0]
         prob_dict = {0: 0.0, 1: 0.0, 2: 0.0}
@@ -389,8 +400,12 @@ def api_predict():
 @app.route("/api/status")
 def status():
     return jsonify({
-        "status": "running", "model_loaded": model is not None,
-        "timestamp": datetime.now().isoformat(), "version": "1.0.0"
+        "status": "running",
+        "model_loaded": model is not None,
+        "scaler_loaded": scaler is not None,
+        "scaling_mode": ("scaled" if scaler is not None else "raw_inputs"),
+        "timestamp": datetime.now().isoformat(),
+        "version": "1.0.0"
     })
 
 @app.route("/api/features")

@@ -434,3 +434,13 @@
 2026-07-13 15:01:22 - [INFO] - 127.0.0.1 - - [13/Jul/2026 15:01:22] "GET /dashboard HTTP/1.1" 200 -
 2026-07-13 15:01:22 - [INFO] - 127.0.0.1 - - [13/Jul/2026 15:01:22] "[36mGET /static/js/script.js HTTP/1.1[0m" 304 -
 2026-07-13 15:01:22 - [INFO] - 127.0.0.1 - - [13/Jul/2026 15:01:22] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 -
+2026-07-14 17:01:58 - [WARNING] - \u26a0\ufe0f Scaler file not found: using raw input values instead of scaling.
+2026-07-14 17:01:58 - [INFO] - \u2705 Connected to MongoDB successfully
+2026-07-14 17:01:58 - [INFO] - ==================================================
+2026-07-14 17:01:58 - [INFO] - \U0001f680 Flood Prediction System Starting
+2026-07-14 17:01:58 - [INFO] - ==================================================
+2026-07-14 17:01:58 - [INFO] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.45.27:5000
+2026-07-14 17:01:58 - [INFO] - [33mPress CTRL+C to quit[0m
